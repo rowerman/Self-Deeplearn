@@ -1,5 +1,6 @@
 # Fuction实例和Variable实例互相引用，导致循环引用，无法被垃圾回收
 # 使用weakref模块解决循环引用的问题
+# 不使用引用计数即可饮用另一个对象
 
 from steps.step09 import Variable, as_array
 import weakref
