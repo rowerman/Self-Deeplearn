@@ -5,6 +5,8 @@ import weakref
 def as_variable(obj):
     if isinstance(obj, Variable):
         return obj
+    if isinstance(obj, (int, float)):  # obj是标量
+        obj = np.array(obj)
     return Variable(obj)
 
 def as_array(x):
@@ -129,7 +131,7 @@ class Function:
             self.inputs = inputs          # 保存输入变量
             self.outputs = [weakref.ref(output) for output in outputs]        # 保存输出变量
         
-        return outputs if len(outputs) == 1 else outputs
+        return outputs[0] if len(outputs) == 1 else outputs
     # 抛出异常，告诉使用Function方法的人此方法应该通过继承来实现
     def forward(self, x):
         raise NotImplementedError()
@@ -138,8 +140,7 @@ class Function:
         raise NotImplementedError()
     
 class Add(Function):
-    def forward(self, xs):
-        x0, x1 = xs
+    def forward(self, x0, x1):
         y = x0 + x1
         return (y,)
     
