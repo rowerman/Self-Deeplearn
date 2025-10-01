@@ -1,6 +1,7 @@
 import numpy as np
 import weakref
 import contextlib
+import dezero
 
 def as_variable(obj):
     if isinstance(obj, Variable):
@@ -97,6 +98,21 @@ class Variable:
             if not retain_grad:
                 for y in f.outputs:
                     y().grad = None  # y是弱引用的对象，必须通过()获取原始对象
+
+    def reshape(self, *shape):
+        if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
+            shape = shape[0]
+        return dezero.functions.reshape(self, shape)
+
+    def sum(self, axis=None, keepdims=False):
+        return dezero.functions.sum(self, axis, keepdims)
+
+    def transpose(self):
+        return dezero.functions.transpose(self)
+    
+    @property
+    def T(self):
+        return dezero.functions.transpose(self)
 
     @property   # 使得shape方法就可以作为实例变量被访问
     def shape(self):
